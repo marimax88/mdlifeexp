@@ -12,7 +12,8 @@ Using [2018-2020 SHIP life expectancy data](https://opendata.maryland.gov/Health
 
 ### Installing and Executing
 
-* Download all the contents of the life_exp folder
+* Download ZIP
+* Navigate to the life_exp folder
   * Subfolders:
     * _site: hosts the rendered html files
     * scatterplot: hosts the Shiny application code
