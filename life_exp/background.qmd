@@ -1,0 +1,40 @@
+---
+title: ""
+---
+
+# Background
+
+Using [2018-2020 SHIP life expectancy data](https://opendata.maryland.gov/Health-and-Human-Services/SHIP-Life-Expectancy-2010-2020/5imf-t65z/data) and [2016-2020 ACS socioeconomic characteristics data](https://opendata.maryland.gov/Demographic/Maryland-Counties-Socioeconomic-Characteristics-20/is7h-kp6x/about_data) of Maryland Counties, I will be conducting a logistic regression in R predicting the odds of a given county having above state average life expectancy, 78.6 years, based on median household income, education level, racial composition, and sex composition.
+
+# Mapping the Data
+
+```{r}
+library(tidyverse)  
+library(sf)         
+library(mapview)    
+library(leaflet) 
+library(dplyr)
+library(leafpop)
+library(readr)
+```
+
+```{r}
+md <- read_sf("/Users/mkheyfets/Documents/life_exp/Maryland_Physical_Boundaries_-_County_Boundaries_(Generalized)")
+life_exp <- read_csv("scatterplot/SHIP_Life_Expectancy_2010-2020_20231228.csv")
+life_exp_j <- life_exp %>% 
+  rename("county" = "Jurisdiction") 
+life_exp_md <- full_join(md, life_exp_j)
+
+```
+
+```{r}
+pal <- colorRampPalette(c("#ff1a1a", "#ffa142", "#ccff66"))
+mapview(life_exp_md,
+        label=life_exp_md$county,
+        zcol="Life_Expectancy",
+        col.regions=pal(6),
+        at = (seq(min(life_exp_md$Life_Expectancy), max(life_exp_md$Life_Expectancy), length.out = 6)),
+        legend = TRUE,
+        layer.name = "2018-2020 Life Expectancy in Years",
+        popup=popupTable(life_exp_md, zcol = c("Life_Expectancy")))
+```
