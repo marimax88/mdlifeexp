@@ -16,7 +16,7 @@ Using [2018-2020 SHIP life expectancy data](https://opendata.maryland.gov/Health
 * Navigate to the life_exp folder
   * Subfolders:
     * _site: hosts the rendered html files
-    * scatterplot: hosts the Shiny application code
+    * scatterplot: hosts the Shiny application code and the life expectancy and socioeconomic data
     * Maryland_Physical_Boundaries_-_County_Boundaries_(Generalized): hosts the MD county shapefile
 * Open background.qmd
 * Hit Render
