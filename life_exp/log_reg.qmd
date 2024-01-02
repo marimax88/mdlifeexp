@@ -1,0 +1,65 @@
+---
+title: ""
+---
+
+# Importing, Merging, and Cleaning the Datasets
+
+```{r}
+library(shiny)
+library(tidyverse)
+library(dplyr)
+library(janitor)
+library(car)
+```
+
+```{r}
+md_demo <- read_csv("scatterplot/Maryland_Counties_Socioeconomic_Characteristics__2016-2020_from_ACS__20231228.csv")
+life_exp <- read_csv("scatterplot/SHIP_Life_Expectancy_2010-2020_20231228.csv")
+md_demo_life <- full_join(life_exp, md_demo)
+md_demo_life <- clean_names(md_demo_life)
+```
+
+# Creating Response and Predictor Variables
+
+```{r}
+md_demo_life <- md_demo_life %>% 
+  mutate(above_below_state_exp = ifelse(life_expectancy < 78.6, 0, 1)) %>% 
+  mutate(percent_less_than_9th_grade = ((less_than_9th_grade / population_25_years_and_older)*100)) %>% 
+  mutate(percent_white = ((white_alone / total_population)*100)) %>% 
+  mutate(percent_male = ((male / voting_age_population)*100)) 
+```
+
+# [Graphing the Predictors and the Response Variable](https://marimax.shinyapps.io/scatterplot/)
+
+The linked RShiny application is an interactive scatterplot of the different predictor variables and the probability of whether a county has above state average life expectancy.
+
+#Running and Interpreting the Logistic Regression Model
+
+```{r}
+life_exp.glm <- glm(data = md_demo_life,
+                  formula=above_below_state_exp~ median_household_income + percent_less_than_9th_grade+ percent_white + percent_male,
+                  family = binomial('logit'))
+vif(life_exp.glm)
+```
+
+While all of our predictors have a VIF above 1, indicating some level of correlation among each other, none are greater than 10 and the impact of multicollinearity on model estimates should not be significant.
+
+```{r}
+summary(life_exp.glm)
+#Exponentiating the Coefficients
+life_exp_logOR <- coef(life_exp.glm)
+life_exp_logOR
+life_exp_OR<- exp(life_exp_logOR)
+life_exp_OR
+#Exponentiating the Confidence Intervals
+life_exp_log_CI <- confint(life_exp.glm)
+life_exp_log_CI
+life_exp_CI <- exp(life_exp_log_CI)
+life_exp_CI
+```
+
+At a=0.05, none of the predictors, a county's median household income, percent of the 25 years and older population with less than a ninth grade population, percent of the total population identifying as white alone, and percent of the voting age population identifying as male, significantly predict whether a given county has above state average life expectancy. However, median household income is approaching significance such that every unit increase in a Maryland county's median household income predicts a 0.0102% increase in the odds of having an above state average life expectancy, controlling for a county's race, sex, and education demographics. Moreover the 95% confidence interval for median household income, \[1.000018, 1.000234\], suggests that these odds are different from 1. The reason why the p value could indicate that median household income is not a significant predictor of above or below state average life expectancy while the confidence interval indicates that median household income's coefficient is different from the null expectation of 1 (meaning higher and lower income counties indeed have different odds of being above or below state average life expectancy) is because the sample size is pretty small. Maryland only has 24 counties. Moreover, a confidence interval of \[1.000018, 1.000234\] still indicates a small effect size, even if it is different from 1. For future analyses, assessing census tracts would increase the sample size and might help detect more significant results. Future analyses can also look at other factors, such as amount of green space, insurance coverage, or number of medical facilities, to better predict whether the life expectancy will be above state average.
+
+Additionally, the residual deviance is lower than the null deviance, indicating that the model is a better fit than a null model, indicating that a model with a county's income, education, race, and sex demographics is better able to predict whether a given county has above or below state average life expectancy compared to an intercept-only model.
+
+
