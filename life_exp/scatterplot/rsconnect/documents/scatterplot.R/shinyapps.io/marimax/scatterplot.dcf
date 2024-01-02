@@ -1,0 +1,12 @@
+name: scatterplot
+title: scatterplot
+username: marimax
+account: marimax
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 10853662
+bundleId: 8092464
+url: https://marimax.shinyapps.io/scatterplot/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
