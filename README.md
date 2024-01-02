@@ -13,6 +13,7 @@ Using [2018-2020 SHIP life expectancy data](https://opendata.maryland.gov/Health
 ### Installing and Executing
 
 * Download ZIP
+* Extract the files
 * Navigate to the life_exp folder
   * Subfolders:
     * _site: hosts the rendered html files
