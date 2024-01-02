@@ -20,6 +20,7 @@ Using [2018-2020 SHIP life expectancy data](https://opendata.maryland.gov/Health
     * Maryland_Physical_Boundaries_-_County_Boundaries_(Generalized): hosts the MD county shapefile
 * Open background.qmd
 * Set working directory to the life_exp folder
+* Install the necessary packages
 * Hit Render
 
 ## Data Sources
